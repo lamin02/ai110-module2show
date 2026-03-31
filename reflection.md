@@ -7,11 +7,34 @@
 - Briefly describe your initial UML design.
 - What classes did you include, and what responsibilities did you assign to each?
 
+3 core actions identified: 
+1) add and manage pet info 
+2) create and manage care tasks 
+3) generate and view daily care schedule 
+
+Classes: 
+
+Pet 
+- represents an animal and keeps track of tasks related to that pet 
+Attributes: name, species, list of tasks 
+Methods: add_task(), get_tasks()
+
+Task  
+The Task represents a care activity such as feeding, walking, or medication.  
+Attributes: title, duration, priority, time (optional), recurring (optional)  
+Methods: is_due_today(), conflicts_with()
+
+Scheduler  
+The Scheduler is responsible for organizing tasks into a daily plan. It applies logic like sorting and conflict detection.  
+Attributes: list of tasks  
+Methods: sort_tasks(), detect_conflicts(), generate_schedule()
+
 **b. Design changes**
 
 - Did your design change during implementation?
 - If yes, describe at least one change and why you made it.
 
+No, my design did not change during implementation. 
 ---
 
 ## 2. Scheduling Logic and Tradeoffs
