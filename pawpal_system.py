@@ -104,3 +104,34 @@ class Scheduler:
     def load_tasks_from_owner(self, owner: Owner) -> None:
         """Load all tasks from an owner's pets into the scheduler."""
         self.tasks = owner.get_all_tasks()
+
+    def sort_by_time(self) -> List[Task]:
+        """Return tasks sorted by time (HH:MM format)."""
+        return sorted(
+            self.tasks,
+            key=lambda task: task.time if task.time else "99:99"
+        )
+
+
+    def filter_tasks(self, completed: bool = None) -> List[Task]:
+        """Filter tasks by completion status."""
+        if completed is None:
+            return self.tasks
+        
+        return [task for task in self.tasks if task.completed == completed]
+    
+    def detect_conflicts(self) -> List[str]:
+        """Detect tasks scheduled at the same time."""
+        conflicts = []
+        seen_times = {}
+
+        for task in self.tasks:
+            if task.time:
+                if task.time in seen_times:
+                    conflicts.append(
+                        f"Conflict: '{task.title}' and '{seen_times[task.time]}' at {task.time}"
+                    )
+                else:
+                    seen_times[task.time] = task.title
+
+        return conflicts

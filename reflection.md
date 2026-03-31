@@ -49,6 +49,9 @@ No, my design did not change during implementation.
 - Describe one tradeoff your scheduler makes.
 - Why is that tradeoff reasonable for this scenario?
 
+- Conflict detection only checks exact matching times.
+- Does not handle overlapping task durations.
+- Simpler and more readable, but less accurate for real-world scheduling.
 ---
 
 ## 3. AI Collaboration

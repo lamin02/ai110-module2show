@@ -1,8 +1,12 @@
 import streamlit as st
+from pawpal_system import Owner, Pet, Task, Scheduler
 
 st.set_page_config(page_title="PawPal+", page_icon="🐾", layout="centered")
 
 st.title("🐾 PawPal+")
+
+if "owner" not in st.session_state:
+    st.session_state.owner = Owner("Default Owner")
 
 st.markdown(
     """
@@ -69,6 +73,72 @@ else:
     st.info("No tasks yet. Add one above.")
 
 st.divider()
+
+st.header("Add a Pet")
+
+# ✅ FIX: added missing input for species
+pet_species = st.text_input("Pet species")
+
+if st.button("Add Pet"):
+    if pet_name and pet_species:
+        new_pet = Pet(pet_name, pet_species)
+        st.session_state.owner.add_pet(new_pet)
+        st.success(f"{pet_name} added!")
+    else:
+        st.warning("Please enter both name and species.")
+
+# ✅ Show pets
+st.header("Your Pets")
+
+pets = st.session_state.owner.get_pets()
+
+for pet in pets:
+    st.write(f"- {pet.name} ({pet.species})")
+
+
+# ✅ Add Task (CONNECTED to your backend)
+st.header("Add Task to a Pet")
+
+if pets:
+    pet_names = [pet.name for pet in pets]
+    selected_pet_name = st.selectbox("Select a pet", pet_names)
+
+    task_title_input = st.text_input("Task title")
+    task_duration_input = st.number_input("Duration (minutes)", min_value=1, value=10)
+    task_priority_input = st.selectbox("Priority", ["low", "medium", "high"])
+
+    if st.button("Add Task to Pet"):
+        if task_title_input:
+            selected_pet = next(p for p in pets if p.name == selected_pet_name)
+
+            new_task = Task(
+                title=task_title_input,
+                duration=task_duration_input,
+                priority=task_priority_input
+            )
+
+            selected_pet.add_task(new_task)
+            st.success(f"Task '{task_title_input}' added to {selected_pet.name}!")
+        else:
+            st.warning("Enter a task title.")
+else:
+    st.info("Add a pet first.")
+
+
+# ✅ Display tasks
+st.header("Tasks by Pet")
+
+for pet in pets:
+    st.subheader(f"{pet.name}'s Tasks")
+
+    tasks = pet.get_tasks()
+
+    if tasks:
+        for task in tasks:
+            st.write(f"- {task.title} ({task.priority}, {task.duration} min)")
+    else:
+        st.write("No tasks yet.")
+
 
 st.subheader("Build Schedule")
 st.caption("This button should call your scheduling logic once you implement it.")
