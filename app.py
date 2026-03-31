@@ -125,7 +125,7 @@ else:
     st.info("Add a pet first.")
 
 
-# ✅ Display tasks
+
 st.header("Tasks by Pet")
 
 for pet in pets:
@@ -139,20 +139,40 @@ for pet in pets:
     else:
         st.write("No tasks yet.")
 
+    st.subheader("Build Schedule")
 
-st.subheader("Build Schedule")
-st.caption("This button should call your scheduling logic once you implement it.")
+    if st.button("Generate schedule"):
+        scheduler = Scheduler()
+        scheduler.load_tasks_from_owner(st.session_state.owner)
 
-if st.button("Generate schedule"):
-    st.warning(
-        "Not implemented yet. Next step: create your scheduling logic (classes/functions) and call it here."
-    )
-    st.markdown(
-        """
-Suggested approach:
-1. Design your UML (draft).
-2. Create class stubs (no logic).
-3. Implement scheduling behavior.
-4. Connect your scheduler here and display results.
-"""
-    )
+        # 🔹 Sorted schedule
+        sorted_tasks = scheduler.sort_by_time()
+
+        st.success("Schedule generated!")
+
+        st.markdown("### 📅 Daily Schedule")
+        for task in sorted_tasks:
+            st.write(f"{task.time} - {task.title} ({task.priority})")
+
+        # 🔹 Conflict warnings
+        conflicts = scheduler.detect_conflicts()
+
+        if conflicts:
+            st.warning("⚠️ Scheduling Conflicts Detected:")
+            for c in conflicts:
+                st.write(c)
+        else:
+            st.success("No conflicts detected ✅")
+
+
+
+
+
+    """
+    Suggested approach:
+    1. Design your UML (draft).
+    2. Create class stubs (no logic).
+    3. Implement scheduling behavior.
+    4. Connect your scheduler here and display results.
+    """
+        

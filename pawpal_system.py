@@ -135,3 +135,17 @@ class Scheduler:
                     seen_times[task.time] = task.title
 
         return conflicts
+
+    def complete_task(self, task: Task) -> None:
+        """Mark a task complete and handle recurring tasks."""
+        task.mark_complete()
+
+        if task.recurring:
+            new_task = Task(
+                title=task.title,
+                duration=task.duration,
+                priority=task.priority,
+                time=task.time,
+                recurring=True
+            )
+            self.tasks.append(new_task)
